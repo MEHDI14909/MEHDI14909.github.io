@@ -1,0 +1,1528 @@
+import React, { useState, useEffect, useRef } from 'react';
+import Dock from '@/components/ui/dock';
+import SpotlightCursor from '@/components/ui/spotlight-cursor';
+import {
+  Home,
+  Briefcase,
+  Layers,
+  Sparkles,
+  Mail,
+  Info,
+  Check,
+  Copy,
+  ExternalLink,
+  Code2,
+  Server,
+  Monitor,
+  Layers3,
+  ArrowUpRight,
+  FolderOpen,
+  ChevronRight,
+  ChevronDown,
+  X,
+  Send,
+  Database,
+  Globe,
+  Smartphone,
+  Cpu,
+} from 'lucide-react';
+
+const TECH_CAPABILITIES_DATA = {
+  react: {
+    name: 'React.js',
+    badge: 'FRONTEND COMPONENT ARCHITECTURE',
+    icon: Code2,
+    description:
+      'Building interactive, modern single-page applications (SPAs) with reusable components, state hooks, and high-performance rendering.',
+    questions: [
+      {
+        question: 'What types of applications can you build with React.js?',
+        answer:
+          'I develop modern Single Page Applications (SPAs), dynamic client dashboards, real-time analytics portals, multi-step interactive workflows, and responsive web products with seamless navigation and fast state updates.',
+        tags: ['Single Page Apps (SPA)', 'Dynamic Dashboards', 'Interactive Portals'],
+      },
+      {
+        question: 'Do you design modular and reusable component systems?',
+        answer:
+          'Yes, I architect clean, reusable, and modular component systems—including custom modals, responsive dropdowns, data tables, carousels, and complex form controls that scale cleanly across large applications.',
+        tags: ['Reusable Components', 'React Hooks', 'Clean Props Architecture'],
+      },
+      {
+        question: 'How do you optimize state management and rendering performance?',
+        answer:
+          'I use modern React hooks (useState, useEffect, useMemo, useCallback) alongside disciplined state normalization to prevent unnecessary re-renders, ensuring smooth 60fps animations and fast load times.',
+        tags: ['State Management', 'Render Optimization', 'Fast Load Times'],
+      },
+    ],
+  },
+  javascript: {
+    name: 'JavaScript',
+    badge: 'CORE CLIENT-SIDE LOGIC (ES6+)',
+    icon: Sparkles,
+    description:
+      'Developing robust client-side functionality, asynchronous workflows, dynamic DOM manipulation, and interactive animations.',
+    questions: [
+      {
+        question: 'What core functionality do you implement with modern JavaScript?',
+        answer:
+          'I implement complex business logic, interactive calculations, instant search and filtering algorithms, dynamic modal systems, drag-and-drop workflows, and client-side data validation using modern ES6+ standards.',
+        tags: ['ES6+ Modern JS', 'Dynamic DOM Manipulation', 'Async Workflows'],
+      },
+      {
+        question: 'How do you handle asynchronous operations and API integration?',
+        answer:
+          'I write robust asynchronous code using Promises and async/await. I manage API communication via Fetch and Axios, handle loading indicators, and implement graceful error handling with intuitive user feedback.',
+        tags: ['async/await', 'API Fetching', 'Error Handling'],
+      },
+      {
+        question: 'How do you maintain code quality and prevent runtime errors?',
+        answer:
+          'I follow modular code organization, strict scoping, event delegation, and debouncing/throttling techniques to eliminate memory leaks, lag, and cross-browser discrepancies.',
+        tags: ['Clean Code', 'Event Delegation', 'Cross-Browser Stability'],
+      },
+    ],
+  },
+  nodejs: {
+    name: 'Node.js',
+    badge: 'SERVER-SIDE BACKEND RUNTIME',
+    icon: Server,
+    description:
+      'Engineering high-concurrency server applications, background services, API endpoints, and data processing pipelines.',
+    questions: [
+      {
+        question: 'What backend services and servers do you develop with Node.js?',
+        answer:
+          'I develop fast, scalable server-side runtimes, custom REST APIs, user authentication services, file upload/streaming pipelines, and real-time background processing services using Node.js.',
+        tags: ['Backend Services', 'Scalable Runtime', 'API Servers'],
+      },
+      {
+        question: 'How do you leverage the Node.js event loop for high throughput?',
+        answer:
+          'I take full advantage of Node’s non-blocking I/O and asynchronous event loop to handle concurrent database queries and network calls smoothly without locking the main thread.',
+        tags: ['Non-blocking I/O', 'Event-Driven', 'High Throughput'],
+      },
+      {
+        question: 'How do you handle server security and environment configuration?',
+        answer:
+          'I manage sensitive keys and database credentials securely using environment variables, configure CORS headers, implement rate-limiting, and sanitize all input payloads against security threats.',
+        tags: ['Environment Security', 'CORS Configuration', 'Data Sanitization'],
+      },
+    ],
+  },
+  express: {
+    name: 'Express.js',
+    badge: 'MODULAR BACKEND FRAMEWORK',
+    icon: Server,
+    description:
+      'Configuring organized routing, custom middleware pipelines, JSON request parsing, and error-handling architectures.',
+    questions: [
+      {
+        question: 'What architectural patterns do you follow in Express.js?',
+        answer:
+          'I organize backends into clean MVC patterns with dedicated routers, controllers, and services. I configure JSON parsing, route guards, token authorization middleware, and standardized response wrappers.',
+        tags: ['Modular Routing', 'Custom Middleware', 'JSON Request Handling'],
+      },
+      {
+        question: 'How do you structure error handling in Express applications?',
+        answer:
+          'I build centralized error-handling middleware that catches synchronous and asynchronous exceptions across all endpoints, returning consistent HTTP status codes (400, 401, 403, 404, 500) and actionable messages.',
+        tags: ['Centralized Error Handling', 'HTTP Status Codes', 'Server Health'],
+      },
+    ],
+  },
+  htmlcss: {
+    name: 'HTML & CSS',
+    badge: 'SEMANTIC MARKUP & MODERN STYLING',
+    icon: Monitor,
+    description:
+      'Crafting clean, accessible HTML5 layouts with modern CSS (Flexbox, Grid) and utility styling via Tailwind CSS.',
+    questions: [
+      {
+        question: 'How do you structure HTML markup and modern layouts?',
+        answer:
+          'I write semantic HTML5 markup for search engines and screen readers, paired with modern CSS techniques like Flexbox and CSS Grid to produce clean, pixel-perfect, and lightweight layouts.',
+        tags: ['Semantic HTML5', 'CSS Grid & Flexbox', 'Tailwind CSS'],
+      },
+      {
+        question: 'How do you ensure accessibility (a11y) and cross-browser fidelity?',
+        answer:
+          'I follow modern accessibility best practices with proper ARIA attributes, keyboard navigation support, and consistent CSS reset styles tested across Chrome, Safari, Firefox, and Edge.',
+        tags: ['Cross-Browser Tested', 'Accessibility (a11y)', 'Fluid Styling'],
+      },
+    ],
+  },
+  restapi: {
+    name: 'REST APIs',
+    badge: 'API DESIGN & INTEGRATION',
+    icon: Globe,
+    description:
+      'Designing standard CRUD endpoints (GET, POST, PUT, DELETE) and integrating third-party APIs into frontend apps.',
+    questions: [
+      {
+        question: 'What kinds of REST API endpoints do you design and integrate?',
+        answer:
+          'I design full CRUD endpoints (GET, POST, PUT, PATCH, DELETE) with clear JSON payloads, parameter validation, and pagination. I also connect frontend interfaces with third-party APIs like payment systems, maps, and email delivery.',
+        tags: ['CRUD Operations', 'API Integration', 'Data Validation'],
+      },
+      {
+        question: 'How do you ensure API response consistency and documentation?',
+        answer:
+          'Every endpoint returns a predictable JSON response structure with success booleans, status codes, descriptive messages, and data payloads, making client integration seamless and reliable.',
+        tags: ['Predictable JSON', 'Consistent Status Codes', 'Easy Integration'],
+      },
+    ],
+  },
+  database: {
+    name: 'Database Management',
+    badge: 'DATA PERSISTENCE & QUERIES',
+    icon: Database,
+    description:
+      'Connecting servers to SQL & document databases, structuring relational schemas, and writing safe, optimized queries.',
+    questions: [
+      {
+        question: 'Which databases do you work with and how do you organize data?',
+        answer:
+          'I work with relational databases (PostgreSQL, MySQL) and document databases (MongoDB). I design normalized schemas, establish relationships, define foreign keys, and write optimized SELECT, INSERT, UPDATE, and DELETE queries.',
+        tags: ['Database Connectivity', 'Table Schemas', 'Optimized Queries'],
+      },
+      {
+        question: 'How do you prevent SQL injection and safeguard data integrity?',
+        answer:
+          'I always use parameterized queries and ORM abstractions to prevent SQL injection vulnerabilities. I configure connection pools, transactional rollbacks for multi-step updates, and index critical columns for fast queries.',
+        tags: ['SQL Injection Prevention', 'Connection Pooling', 'Data Integrity'],
+      },
+    ],
+  },
+  responsive: {
+    name: 'Responsive UI',
+    badge: 'MOBILE-FIRST ADAPTIVE DESIGN',
+    icon: Smartphone,
+    description:
+      'Ensuring applications look beautiful and work flawlessly across mobile phones, tablets, laptops, and wide screens.',
+    questions: [
+      {
+        question: 'What is your methodology for multi-device responsive web design?',
+        answer:
+          'I employ a mobile-first approach where interfaces fluidly adapt from 360px mobile screens up to 4K displays. I use touch-friendly hit areas, flexible grids, adaptive typography clamps, and viewport-aware containers.',
+        tags: ['Mobile-First', 'Tablet & Desktop Ready', 'Fluid Clamps'],
+      },
+      {
+        question: 'How do you adapt complex desktop interfaces for mobile users?',
+        answer:
+          'I transform wide desktop tables, multi-column navigation, and complex toolbars into collapsible drawers, swipeable cards, and touch-optimized accordions that preserve complete functionality on mobile devices.',
+        tags: ['Collapsible Drawers', 'Card Views', 'Touch Friendly'],
+      },
+    ],
+  },
+};
+
+const SKILL_BADGES_LIST = [
+  { key: 'react', name: 'React.js' },
+  { key: 'javascript', name: 'JavaScript' },
+  { key: 'nodejs', name: 'Node.js' },
+  { key: 'express', name: 'Express.js' },
+  { key: 'htmlcss', name: 'HTML & CSS' },
+  { key: 'restapi', name: 'REST APIs' },
+  { key: 'database', name: 'Database Management' },
+  { key: 'responsive', name: 'Responsive UI' },
+];
+
+const EXTRA_SKILLS_DATA = {
+  php: {
+    name: 'PHP',
+    badge: 'SERVER-SIDE WEB DEVELOPMENT',
+    icon: Globe,
+    description:
+      'Developing structured server-side web applications, custom API endpoints, form processing, and database-driven dynamic services.',
+    questions: [
+      {
+        question: 'What types of backend services do you develop with PHP?',
+        answer:
+          'I build custom RESTful API endpoints, server-rendered dynamic web pages, authentication modules, form processing pipelines, and integrations with SQL databases with strict security best practices.',
+        tags: ['Custom REST APIs', 'Backend Scripting', 'Form Processing'],
+      },
+      {
+        question: 'How do you secure PHP applications against vulnerabilities?',
+        answer:
+          'I use PDO prepared statements to completely eliminate SQL injection, sanitize all incoming GET/POST inputs, enforce CSRF protection tokens, and securely hash passwords with modern cryptographic algorithms.',
+        tags: ['PDO Prepared Statements', 'Input Sanitization', 'CSRF Protection'],
+      },
+    ],
+  },
+  dotnet: {
+    name: '.NET',
+    badge: 'ENTERPRISE APPLICATION FRAMEWORK',
+    icon: Server,
+    description:
+      'Engineering high-performance enterprise backends, scalable Web APIs, microservices, and strongly-typed business logic.',
+    questions: [
+      {
+        question: 'How do you utilize .NET for backend API development?',
+        answer:
+          'I engineer fast ASP.NET Core Web APIs, configure dependency injection containers, implement middleware pipelines, and structure clean microservices architectures that scale under heavy corporate workloads.',
+        tags: ['ASP.NET Core', 'Web APIs', 'Dependency Injection'],
+      },
+      {
+        question: 'How do you handle data access and asynchronous workflows in .NET?',
+        answer:
+          'I use Entity Framework Core with async/await patterns for non-blocking database queries, implement repository patterns, and ensure strict type-safety across all enterprise data transactions.',
+        tags: ['Entity Framework Core', 'Async Programming', 'Repository Pattern'],
+      },
+    ],
+  },
+  csharp: {
+    name: 'C#',
+    badge: 'OBJECT-ORIENTED ARCHITECTURE',
+    icon: Code2,
+    description:
+      'Architecting clean object-oriented software, data structures, domain services, and high-performance server logic.',
+    questions: [
+      {
+        question: 'What are your core engineering strengths in C#?',
+        answer:
+          'I design clean domain-driven models, utilize LINQ for expressive collection processing, apply SOLID design principles, and write maintainable, modular object-oriented code with strict compile-time type verification.',
+        tags: ['SOLID Principles', 'LINQ Queries', 'Domain-Driven Design'],
+      },
+      {
+        question: 'How do you manage performance and concurrency in C#?',
+        answer:
+          'I leverage the Task Parallel Library (TPL), async/await, and thread-safe data structures to build concurrent systems with minimal memory allocations and zero UI blocking.',
+        tags: ['Task Parallel Library', 'Concurrency', 'Thread Safety'],
+      },
+    ],
+  },
+  sqlserver: {
+    name: 'SQL Server',
+    badge: 'ENTERPRISE RDBMS (T-SQL)',
+    icon: Database,
+    description:
+      'Designing relational table schemas, complex T-SQL queries, stored procedures, triggers, and index optimizations.',
+    questions: [
+      {
+        question: 'How do you design and optimize Microsoft SQL Server databases?',
+        answer:
+          'I create normalized relational database schemas (1NF to 3NF), write complex T-SQL queries and stored procedures, configure clustered and non-clustered indexes, and analyze execution plans for high query speeds.',
+        tags: ['T-SQL Stored Procedures', 'Index Optimization', 'Schema Normalization'],
+      },
+      {
+        question: 'How do you enforce ACID transactions and data integrity?',
+        answer:
+          'I implement explicit database transactions with rollback mechanisms, configure cascading foreign key constraints, and establish automated data backups and consistency checks.',
+        tags: ['ACID Compliance', 'Transaction Rollbacks', 'Data Integrity'],
+      },
+    ],
+  },
+  mysql: {
+    name: 'MySQL',
+    badge: 'HIGH-SPEED RELATIONAL DATABASE',
+    icon: Database,
+    description:
+      'Configuring performant MySQL database architectures, relational joins, connection pooling, and data persistence.',
+    questions: [
+      {
+        question: 'What solutions do you build with MySQL?',
+        answer:
+          'I design high-performance relational databases for web apps, optimize complex multi-table JOINs, manage connection pooling with Node.js/PHP/.NET, and configure indexes for rapid data retrieval.',
+        tags: ['Relational Schemas', 'Optimized JOINs', 'Connection Pooling'],
+      },
+      {
+        question: 'How do you handle scaling and query optimization in MySQL?',
+        answer:
+          'I analyze EXPLAIN query plans to eliminate full table scans, create composite indexes on high-frequency lookup columns, and structure data to support high concurrent read and write operations.',
+        tags: ['EXPLAIN Optimization', 'Composite Indexes', 'Concurrent Reads'],
+      },
+    ],
+  },
+};
+
+const EXTRA_SKILLS_KEYS = ['php', 'dotnet', 'csharp', 'sqlserver', 'mysql'];
+
+export default function App() {
+  // Content entrance state
+  const [contentVisible, setContentVisible] = useState(false);
+
+  // Email copy indicator
+  const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef(null);
+
+  // "Explore Capabilities" interactive modal state
+  const [capabilitiesModalOpen, setCapabilitiesModalOpen] = useState(false);
+  const [selectedTech, setSelectedTech] = useState('react');
+  const [expandedQuestion, setExpandedQuestion] = useState(0);
+
+  // "Extra Capabilities" interactive modal state (PHP, .NET, C#, SQL Server, MySQL)
+  const [extraModalOpen, setExtraModalOpen] = useState(false);
+  const [selectedExtraSkill, setSelectedExtraSkill] = useState('php');
+  const [expandedExtraQuestion, setExpandedExtraQuestion] = useState(0);
+
+  // "Open" high-level capabilities modal state
+  const [openModalActive, setOpenModalActive] = useState(false);
+  const [highLevelCategory, setHighLevelCategory] = useState('frontend');
+  const [expandedHighLevelQuestion, setExpandedHighLevelQuestion] = useState(0);
+
+  // "Let's Talk" contact modal state
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [senderMessage, setSenderMessage] = useState('');
+  const [messageSent, setMessageSent] = useState(false);
+
+  // Top level container reference for dynamic background illumination
+  const containerRef = useRef(null);
+
+  // Canvas frame sequence references
+  const canvasRef = useRef(null);
+  const videoFallbackRef = useRef(null);
+  const framesRef = useRef([]);
+  const [framesLoaded, setFramesLoaded] = useState(false);
+  const lastDrawnFrameRef = useRef(-1);
+  const ctxRef = useRef(null);
+
+  // Mouse tracking references for smooth cursor tracking
+  const targetMouseRef = useRef({ x: 0.5, y: 0.5 });
+  const currentMouseRef = useRef({ x: 0.5, y: 0.5 });
+  const stageRef = useRef(null);
+  const rafIdRef = useRef(null);
+
+  // Preload all 96 extracted frames for instantaneous, zero-latency 60fps tracking
+  useEffect(() => {
+    let isCancelled = false;
+    const TOTAL_FRAMES = 96;
+    const images = [];
+    let loadedCount = 0;
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const img = new Image();
+      const numStr = String(i).padStart(3, '0');
+      img.src = `/assets/character_frames/f_${numStr}.jpg`;
+      img.onload = () => {
+        if (isCancelled) return;
+        loadedCount++;
+        if (loadedCount >= 8 || i === 50) {
+          setFramesLoaded(true);
+        }
+      };
+      img.onerror = () => {
+        if (i === 50 && !isCancelled) {
+          setFramesLoaded(true);
+        }
+      };
+      images.push(img);
+    }
+    framesRef.current = images;
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  // Entrance animation trigger
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setContentVisible(true);
+    }, 100);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Track cursor and touch events
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const normX = Math.min(Math.max(0, e.clientX / window.innerWidth), 1);
+      const normY = Math.min(Math.max(0, e.clientY / window.innerHeight), 1);
+      targetMouseRef.current = { x: normX, y: normY };
+    };
+
+    const handleMouseLeave = () => {
+      targetMouseRef.current = { x: 0.5, y: 0.5 };
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const normX = Math.min(Math.max(0, touch.clientX / window.innerWidth), 1);
+      const normY = Math.min(Math.max(0, touch.clientY / window.innerHeight), 1);
+      targetMouseRef.current = { x: normX, y: normY };
+    };
+
+    const handleTouchEnd = () => {
+      targetMouseRef.current = { x: 0.5, y: 0.5 };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
+  // 60FPS Animation Loop: Optimized for responsiveness, fluid gaze tracking, and zero lag
+  useEffect(() => {
+    const LERP_FACTOR = 0.085;
+    let isRunning = true;
+
+    const update = () => {
+      if (!isRunning) return;
+
+      currentMouseRef.current.x +=
+        (targetMouseRef.current.x - currentMouseRef.current.x) * LERP_FACTOR;
+      currentMouseRef.current.y +=
+        (targetMouseRef.current.y - currentMouseRef.current.y) * LERP_FACTOR;
+
+      const currX = currentMouseRef.current.x;
+
+      // CORRECTED CURSOR TRACKING:
+      // Frame 28 = looks RIGHT, Frame 50 = looks CENTER, Frame 72 = looks LEFT
+      const targetFrame = Math.round(50 + (0.5 - currX) * 44);
+      const clampedFrame = Math.max(26, Math.min(74, targetFrame));
+
+      // Instant 0ms Canvas Rendering: Pure character render with full shoes & natural ground shadow
+      if (clampedFrame !== lastDrawnFrameRef.current) {
+        const canvas = canvasRef.current;
+        const frames = framesRef.current;
+        if (canvas && frames.length >= clampedFrame) {
+          const img = frames[clampedFrame - 1];
+          if (img && img.complete && img.naturalWidth > 0) {
+            if (!ctxRef.current) {
+              ctxRef.current = canvas.getContext('2d');
+            }
+            const ctx = ctxRef.current;
+            if (ctx) {
+              // Draw complete image without any destructive rectangular cuts over shoes
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              lastDrawnFrameRef.current = clampedFrame;
+            }
+          }
+        }
+      }
+
+      // Fallback video sync
+      const video = videoFallbackRef.current;
+      if (video && video.duration && !video.seeking) {
+        const targetVideoTime = (clampedFrame / 96) * video.duration;
+        if (Math.abs(video.currentTime - targetVideoTime) > 0.03) {
+          video.currentTime = targetVideoTime;
+        }
+      }
+
+      // Character remains completely stable without shaking or tilting ("Hile na")!
+      rafIdRef.current = requestAnimationFrame(update);
+    };
+
+    rafIdRef.current = requestAnimationFrame(update);
+
+    return () => {
+      isRunning = false;
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []);
+
+  // Copy email handler
+  const handleCopyEmail = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    navigator.clipboard
+      .writeText('syedmehdi.dev@gmail.com')
+      .then(() => {
+        setCopied(true);
+        if (copyTimeoutRef.current) {
+          window.clearTimeout(copyTimeoutRef.current);
+        }
+        copyTimeoutRef.current = window.setTimeout(() => {
+          setCopied(false);
+        }, 2200);
+      })
+      .catch((err) => {
+        console.error('Failed to copy to clipboard', err);
+      });
+  };
+
+  const handleOpenTechCapabilities = (techKey) => {
+    setSelectedTech(techKey);
+    setExpandedQuestion(0);
+    setCapabilitiesModalOpen(true);
+  };
+
+  const handleSendContactEmail = (e) => {
+    e.preventDefault();
+    const mailtoSubject = encodeURIComponent(
+      `Project Inquiry from ${senderName || 'Client'} (${senderEmail || 'Portfolio'})`
+    );
+    const mailtoBody = encodeURIComponent(
+      `Hello Syed Mehdi,\n\n${senderMessage}\n\n---\nSender Name: ${senderName}\nSender Email: ${senderEmail}`
+    );
+    const mailtoUrl = `mailto:syedmehdi.dev@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
+    window.open(mailtoUrl, '_blank');
+    setMessageSent(true);
+    setTimeout(() => {
+      setMessageSent(false);
+      setSenderMessage('');
+    }, 4000);
+  };
+
+  // Top Dock navigation items
+  const dockNavItems = [
+    {
+      icon: Home,
+      label: 'Home',
+      onClick: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setCapabilitiesModalOpen(false);
+        setOpenModalActive(false);
+        setExtraModalOpen(false);
+        setContactModalOpen(false);
+      },
+    },
+    {
+      icon: Briefcase,
+      label: 'Capabilities',
+      onClick: () => handleOpenTechCapabilities('react'),
+    },
+    {
+      icon: Code2,
+      label: 'Frontend',
+      onClick: () => handleOpenTechCapabilities('react'),
+    },
+    {
+      icon: Server,
+      label: 'Backend',
+      onClick: () => handleOpenTechCapabilities('nodejs'),
+    },
+    {
+      icon: Mail,
+      label: 'Contact',
+      onClick: () => setContactModalOpen(true),
+    },
+  ];
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-screen h-screen overflow-hidden select-none text-white bg-[#A2090F]"
+      style={{
+        backgroundColor: '#A2090F',
+      }}
+    >
+      {/* Interactive Spotlight Cursor: Smooth cursor light effect */}
+      <SpotlightCursor
+        config={{
+          radius: 260,
+          brightness: 0.14,
+          color: '#ffffff',
+        }}
+      />
+
+      {/* 3D CHARACTER STAGE: Restored to right side ("barabar mein") for laptop, tablet, and mobile */}
+      <div className="fixed inset-y-0 right-0 w-[52%] sm:w-[54%] md:w-[58%] lg:w-[56%] xl:w-[52%] h-screen z-0 pointer-events-none overflow-hidden flex items-end justify-end pb-0 sm:pb-1 md:pb-2 lg:pb-3">
+        <div
+          ref={stageRef}
+          className="relative w-full h-full flex items-end justify-end pr-0 sm:pr-2 md:pr-6 lg:pr-12 will-change-transform pb-0"
+        >
+          {/* 60FPS Frame-Sequence Canvas: Scaled slightly larger & perfectly grounded */}
+          <canvas
+            ref={canvasRef}
+            width={1280}
+            height={720}
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 3%, black 10%, black 100%)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 3%, black 10%, black 100%)',
+            }}
+            className={`w-full h-auto max-h-[95vh] sm:max-h-[96vh] md:max-h-[98vh] scale-116 sm:scale-124 md:scale-134 lg:scale-140 xl:scale-145 origin-bottom-right object-contain md:object-cover object-bottom select-none pointer-events-none transition-opacity duration-300 ${
+              framesLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+
+          {/* Fallback Video if frames loading */}
+          {!framesLoaded && (
+            <video
+              ref={videoFallbackRef}
+              src="/assets/aistudio/Create_left_and_right_image_b25dda15_8d2c20fc.mp4"
+              muted
+              playsInline
+              preload="auto"
+              style={{
+                WebkitMaskImage:
+                  'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 3%, black 10%, black 100%)',
+                maskImage:
+                  'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 3%, black 10%, black 100%)',
+              }}
+              className="absolute inset-0 w-full h-full object-contain md:object-cover object-bottom pointer-events-none select-none scale-116 sm:scale-124 md:scale-134 lg:scale-140 xl:scale-145 origin-bottom-right"
+            />
+          )}
+        </div>
+      </div>
+
+      {/* TOP NAVIGATION AREA: Clean logo space on left + Dock navbar centered + Let's Talk button on right */}
+      <header className="fixed top-0 left-0 right-0 z-30 w-full px-3 sm:px-6 md:px-10 lg:px-14 py-2.5 sm:py-3.5 md:py-5 flex items-center justify-between pointer-events-none">
+        {/* Left space / mobile indicator */}
+        <div className="pointer-events-auto w-10 sm:w-24 md:w-32 flex items-center">
+          <span className="text-[11px] sm:text-xs font-bold tracking-widest text-white/70 uppercase hidden sm:inline">
+            PORTFOLIO
+          </span>
+        </div>
+
+        {/* Dock Navbar in the top navigation bar */}
+        <div className="pointer-events-auto shrink-0">
+          <Dock items={dockNavItems} className="py-0 scale-90 sm:scale-100" />
+        </div>
+
+        {/* Quick Contact CTA on right (opens interactive email contact form) */}
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setContactModalOpen(true)}
+            className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-black/40 hover:bg-gradient-to-r hover:from-[#8B080E] hover:to-[#EA580C] text-white border border-white/20 hover:border-orange-400/80 transition-all duration-300 cursor-pointer shadow-md hover:shadow-[0_0_18px_rgba(234,88,12,0.4)]"
+          >
+            <span>Let's Talk</span>
+            <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-300" />
+          </button>
+        </div>
+      </header>
+
+      {/* HERO SECTION: Vertically centered, text on left, character on right ("barabar mein") */}
+      <main className="relative z-10 w-full h-screen flex flex-col justify-center px-4 sm:px-8 md:px-12 lg:px-16 overflow-hidden pointer-events-none">
+        {/* Left Hero Content Container */}
+        <div
+          className={`w-full max-w-[52%] sm:max-w-[54%] md:max-w-xl lg:max-w-xl xl:max-w-2xl relative z-10 pointer-events-auto transition-all duration-700 ease-out ${
+            contentVisible
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-6'
+          }`}
+        >
+          {/* Main Heading: "SYED MEHDI" in Sora Font */}
+          <h1
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white leading-[0.95] mb-1.5 sm:mb-2 md:mb-3 drop-shadow-sm select-none"
+            style={{ fontFamily: 'var(--font-heading)' }}
+          >
+            SYED MEHDI
+          </h1>
+
+          {/* Subtitle: "FULL STACK DEVELOPER" in Manrope Font */}
+          <h2
+            className="text-xs sm:text-base md:text-xl lg:text-2xl font-bold tracking-[0.16em] sm:tracking-[0.2em] text-white/95 uppercase mb-2.5 sm:mb-3 md:mb-5 leading-tight"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            FULL STACK DEVELOPER
+          </h2>
+
+          {/* Portfolio Description */}
+          <p
+            className="text-white/85 text-[11px] sm:text-xs md:text-sm lg:text-base font-medium leading-relaxed mb-3.5 sm:mb-5 md:mb-7 max-w-lg"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            Building responsive frontend interfaces and reliable backend services
+            with React.js, JavaScript, Node.js, Express.js, and clean database
+            integrations.
+          </p>
+
+          {/* Action Buttons Row */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 md:gap-3.5">
+            {/* The Black-Colored "Open" Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setHighLevelCategory('frontend');
+                setExpandedHighLevelQuestion(0);
+                setOpenModalActive(true);
+              }}
+              className="inline-flex items-center gap-1.5 sm:gap-2 bg-neutral-950 text-white hover:bg-gradient-to-r hover:from-[#78060A] hover:to-[#EA580C] px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-wide border border-white/25 hover:border-orange-400 shadow-lg hover:shadow-[0_0_22px_rgba(234,88,12,0.45)] hover:scale-102 active:scale-98 transition-all duration-300 cursor-pointer select-none"
+            >
+              <FolderOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-orange-400" />
+              <span>Open</span>
+              <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold uppercase tracking-wider px-1 sm:px-1.5 md:px-2 py-0.5 rounded-full bg-white/15 text-orange-200">
+                SKILLS & Q&A
+              </span>
+            </button>
+
+            {/* Explore Capabilities Button (With cute Star Logo matching Extra Capabilities) */}
+            <button
+              type="button"
+              onClick={() => handleOpenTechCapabilities('react')}
+              className="inline-flex items-center gap-1 sm:gap-1.5 md:gap-2 bg-white text-black hover:bg-gradient-to-r hover:from-[#8B080E] hover:to-[#EA580C] hover:text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-wide border border-white/20 hover:border-orange-400/80 shadow-lg hover:shadow-[0_0_22px_rgba(234,88,12,0.4)] hover:scale-102 active:scale-98 transition-all duration-300 cursor-pointer select-none"
+            >
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500" />
+              <span>Explore Capabilities</span>
+              <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
+            </button>
+
+            {/* Copy Email Button */}
+            <button
+              type="button"
+              onClick={handleCopyEmail}
+              title="Click to copy email address"
+              className="inline-flex items-center gap-1 sm:gap-1.5 md:gap-2 bg-black/40 text-white hover:bg-black/60 hover:border-orange-400/70 border border-white/20 px-2.5 sm:px-3.5 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-semibold tracking-wide backdrop-blur-sm transition-all duration-300 cursor-pointer group relative shadow-md hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] select-none"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-300 stroke-[2.5]" />
+                  <span className="text-emerald-200 font-bold">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-300 opacity-80 group-hover:opacity-100" />
+                  <span className="truncate max-w-[130px] sm:max-w-[180px] md:max-w-none">syedmehdi.dev@gmail.com</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* BELOW EMAIL: Extra Capabilities (White button with same hover effect) & 5 Skills (PHP, .NET, C#, SQL Server, MySQL) */}
+          <div className="mt-3.5 sm:mt-5 md:mt-7 pt-2.5 sm:pt-3.5 md:pt-4 border-t border-white/15 max-w-xl flex flex-col gap-2 sm:gap-2.5 md:gap-3">
+            {/* Extra Capabilities Button (White styling with same button hover effect) */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedExtraSkill('php');
+                  setExpandedExtraQuestion(0);
+                  setExtraModalOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 sm:gap-2 bg-white text-black hover:bg-gradient-to-r hover:from-[#8B080E] hover:to-[#EA580C] hover:text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-wide border border-white/20 hover:border-orange-400/80 shadow-lg hover:shadow-[0_0_22px_rgba(234,88,12,0.4)] hover:scale-102 active:scale-98 transition-all duration-300 cursor-pointer select-none"
+              >
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500" />
+                <span>Extra Capabilities</span>
+                <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
+              </button>
+            </div>
+
+            {/* 5 Replaced Skills: PHP, .NET, C#, SQL Server, MySQL */}
+            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 md:gap-2">
+              {EXTRA_SKILLS_KEYS.map((skillKey) => {
+                const skill = EXTRA_SKILLS_DATA[skillKey];
+                return (
+                  <button
+                    key={skillKey}
+                    type="button"
+                    onClick={() => {
+                      setSelectedExtraSkill(skillKey);
+                      setExpandedExtraQuestion(0);
+                      setExtraModalOpen(true);
+                    }}
+                    title={`Click to view what I can build with ${skill.name}`}
+                    className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-3.5 py-1 sm:py-1.5 md:py-2 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-wide bg-black/40 text-white/95 border border-white/20 hover:border-orange-400 hover:bg-gradient-to-r hover:from-[#8B080E] hover:to-[#EA580C] hover:text-white hover:shadow-[0_0_16px_rgba(249,115,22,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer select-none"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
+                    <span>{skill.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* EXPLORE CAPABILITIES MODAL: Filter by each technology with specific questions & answers */}
+      {capabilitiesModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setCapabilitiesModalOpen(false)}
+        >
+          <div
+            className="bg-[#121214] text-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl relative border border-white/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            {/* Top Accent Bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#A0080E] via-[#EA580C] to-amber-400 shrink-0" />
+
+            {/* Modal Header */}
+            <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-white/10 flex items-start justify-between shrink-0">
+              <div>
+                <div className="flex items-center gap-2 mb-1 text-xs font-bold tracking-widest uppercase text-orange-400">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Explore Capabilities By Technology</span>
+                </div>
+                <h3
+                  className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                  What I Can Build For You
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                  Click any technology button below to see specific questions and what I can build on that stack.
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setCapabilitiesModalOpen(false)}
+                className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer shrink-0 ml-4"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Technology Filter Pills / Buttons (React, JS, Node, Express, HTML/CSS, REST API, Database, Responsive UI) */}
+            <div className="px-6 sm:px-8 py-3 bg-black/40 border-b border-white/10 shrink-0 overflow-x-auto">
+              <div className="flex items-center gap-2 min-w-max pb-1">
+                {SKILL_BADGES_LIST.map((item) => {
+                  const isActive = selectedTech === item.key;
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTech(item.key);
+                        setExpandedQuestion(0);
+                      }}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer ${
+                        isActive
+                          ? 'bg-gradient-to-r from-[#A0080E] to-[#EA580C] text-white shadow-[0_0_15px_rgba(234,88,12,0.45)] border border-orange-400/80 scale-102'
+                          : 'bg-white/5 hover:bg-white/15 text-neutral-300 hover:text-white border border-white/10'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Questions & Capabilities Content Body */}
+            <div className="p-6 sm:p-8 overflow-y-auto space-y-4 grow">
+              {/* Selected Tech Banner */}
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3.5">
+                {React.createElement(TECH_CAPABILITIES_DATA[selectedTech].icon, {
+                  className: 'w-5 h-5 text-orange-400 shrink-0 mt-0.5',
+                })}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-base font-bold text-white tracking-wide">
+                      {TECH_CAPABILITIES_DATA[selectedTech].name}
+                    </h4>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                      {TECH_CAPABILITIES_DATA[selectedTech].badge}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mt-1">
+                    {TECH_CAPABILITIES_DATA[selectedTech].description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Accordion Questions List */}
+              <div className="space-y-3 pt-1">
+                {TECH_CAPABILITIES_DATA[selectedTech].questions.map((item, idx) => {
+                  const isExpanded = expandedQuestion === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`rounded-2xl border transition-all duration-250 overflow-hidden ${
+                        isExpanded
+                          ? 'bg-[#1a1a1e] border-orange-500/50 shadow-md'
+                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      {/* Question Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => setExpandedQuestion(isExpanded ? null : idx)}
+                        className="w-full text-left px-5 py-4 flex items-center justify-between gap-3 cursor-pointer group"
+                      >
+                        <span className="text-sm sm:text-base font-bold text-white group-hover:text-orange-200 transition-colors">
+                          {item.question}
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-orange-400 shrink-0 transition-transform duration-250 ${
+                            isExpanded ? 'rotate-180 text-orange-300' : ''
+                          }`}
+                        />
+                      </button>
+
+                      {/* Answer Drawer */}
+                      {isExpanded && (
+                        <div className="px-5 pb-5 pt-1 border-t border-white/5">
+                          <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-3">
+                            {item.answer}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {item.tags.map((t) => (
+                              <span
+                                key={t}
+                                className="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 sm:px-8 py-4 border-t border-white/10 bg-black/40 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+              <span className="text-xs text-neutral-400 text-center sm:text-left">
+                Want to build something with {TECH_CAPABILITIES_DATA[selectedTech].name}?
+              </span>
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold border border-white/20 text-neutral-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copied ? 'Copied' : 'Copy Email'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCapabilitiesModalOpen(false);
+                    setContactModalOpen(true);
+                  }}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-[#A0080E] to-[#EA580C] hover:from-[#8B080E] hover:to-[#F97316] text-white shadow-md hover:shadow-[0_0_15px_rgba(234,88,12,0.4)] transition-all cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Send Email</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EXTRA CAPABILITIES MODAL: PHP, .NET, C#, SQL Server, MySQL */}
+      {extraModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setExtraModalOpen(false)}
+        >
+          <div
+            className="bg-[#121214] text-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl relative border border-white/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            {/* Top Accent Bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#A0080E] via-[#EA580C] to-amber-400 shrink-0" />
+
+            {/* Modal Header */}
+            <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-white/10 flex items-start justify-between shrink-0">
+              <div>
+                <div className="flex items-center gap-2 mb-1 text-xs font-bold tracking-widest uppercase text-orange-400">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Extra Capabilities &amp; Enterprise Stack</span>
+                </div>
+                <h3
+                  className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                  Backend &amp; Database Expertise
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                  Explore what I can architect and develop using PHP, .NET, C#, SQL Server, and MySQL.
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setExtraModalOpen(false)}
+                className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer shrink-0 ml-4"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Extra Skills Filter Tabs (PHP, .NET, C#, SQL Server, MySQL) */}
+            <div className="px-6 sm:px-8 py-3 bg-black/40 border-b border-white/10 shrink-0 overflow-x-auto">
+              <div className="flex items-center gap-2 min-w-max pb-1">
+                {EXTRA_SKILLS_KEYS.map((skillKey) => {
+                  const item = EXTRA_SKILLS_DATA[skillKey];
+                  const isActive = selectedExtraSkill === skillKey;
+                  return (
+                    <button
+                      key={skillKey}
+                      type="button"
+                      onClick={() => {
+                        setSelectedExtraSkill(skillKey);
+                        setExpandedExtraQuestion(0);
+                      }}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer ${
+                        isActive
+                          ? 'bg-gradient-to-r from-[#A0080E] to-[#EA580C] text-white shadow-[0_0_15px_rgba(234,88,12,0.45)] border border-orange-400/80 scale-102'
+                          : 'bg-white/5 hover:bg-white/15 text-neutral-300 hover:text-white border border-white/10'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Questions & Details Body */}
+            <div className="p-6 sm:p-8 overflow-y-auto space-y-4 grow">
+              {/* Selected Skill Banner */}
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3.5">
+                {React.createElement(EXTRA_SKILLS_DATA[selectedExtraSkill].icon, {
+                  className: 'w-5 h-5 text-orange-400 shrink-0 mt-0.5',
+                })}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-base font-bold text-white tracking-wide">
+                      {EXTRA_SKILLS_DATA[selectedExtraSkill].name}
+                    </h4>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                      {EXTRA_SKILLS_DATA[selectedExtraSkill].badge}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mt-1">
+                    {EXTRA_SKILLS_DATA[selectedExtraSkill].description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Accordion Questions */}
+              <div className="space-y-3 pt-1">
+                {EXTRA_SKILLS_DATA[selectedExtraSkill].questions.map((item, idx) => {
+                  const isExp = expandedExtraQuestion === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`rounded-2xl border transition-all duration-250 overflow-hidden ${
+                        isExp
+                          ? 'bg-[#1a1a1e] border-orange-500/50 shadow-md'
+                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setExpandedExtraQuestion(isExp ? null : idx)}
+                        className="w-full text-left px-5 py-4 flex items-center justify-between gap-3 cursor-pointer group"
+                      >
+                        <span className="text-sm sm:text-base font-bold text-white group-hover:text-orange-200 transition-colors">
+                          {item.question}
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-orange-400 shrink-0 transition-transform duration-250 ${
+                            isExp ? 'rotate-180 text-orange-300' : ''
+                          }`}
+                        />
+                      </button>
+
+                      {isExp && (
+                        <div className="px-5 pb-5 pt-1 border-t border-white/5">
+                          <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-3">
+                            {item.answer}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {item.tags.map((t) => (
+                              <span
+                                key={t}
+                                className="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 sm:px-8 py-4 border-t border-white/10 bg-black/40 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+              <span className="text-xs text-neutral-400 text-center sm:text-left">
+                Need backend or database services with {EXTRA_SKILLS_DATA[selectedExtraSkill].name}?
+              </span>
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold border border-white/20 text-neutral-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copied ? 'Copied' : 'Copy Email'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExtraModalOpen(false);
+                    setContactModalOpen(true);
+                  }}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-[#A0080E] to-[#EA580C] hover:from-[#8B080E] hover:to-[#F97316] text-white shadow-md hover:shadow-[0_0_15px_rgba(234,88,12,0.4)] transition-all cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Send Email</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* "OPEN" BUTTON MODAL (High-level category questions: Frontend, Backend, Full Stack) */}
+      {openModalActive && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setOpenModalActive(false)}
+        >
+          <div
+            className="bg-[#121214] text-white rounded-3xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl relative border border-white/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#A0080E] via-[#EA580C] to-amber-400 shrink-0" />
+
+            <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-white/10 flex items-start justify-between shrink-0">
+              <div>
+                <div className="flex items-center gap-2 mb-1.5 text-xs font-bold tracking-widest uppercase text-orange-400">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Developer Capabilities & Q&A</span>
+                </div>
+                <h3
+                  className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                  What I Can Build For You
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                  Select a category below to explore specific questions and realistic development capabilities.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOpenModalActive(false)}
+                className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer shrink-0 ml-4"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 3 Categories: Frontend, Backend, Full Stack */}
+            <div className="px-6 sm:px-8 py-3.5 bg-black/40 border-b border-white/10 shrink-0">
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { key: 'frontend', label: 'FRONTEND DEVELOPER', icon: Monitor },
+                  { key: 'backend', label: 'BACKEND DEVELOPER', icon: Server },
+                  { key: 'fullstack', label: 'FULL STACK DEVELOPER', icon: Layers3 },
+                ].map((tab) => {
+                  const isActive = highLevelCategory === tab.key;
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => {
+                        setHighLevelCategory(tab.key);
+                        setExpandedHighLevelQuestion(0);
+                      }}
+                      className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 px-2.5 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold tracking-wider transition-all duration-250 cursor-pointer text-center ${
+                        isActive
+                          ? 'bg-gradient-to-r from-[#A0080E] to-[#EA580C] text-white shadow-[0_0_15px_rgba(234,88,12,0.4)] border border-orange-400/60'
+                          : 'bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border border-white/5'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-neutral-400'}`} />
+                      <span className="leading-tight">{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* High Level Questions Body */}
+            <div className="p-6 sm:p-8 overflow-y-auto space-y-4 grow">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3.5">
+                {highLevelCategory === 'frontend' && <Monitor className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />}
+                {highLevelCategory === 'backend' && <Server className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />}
+                {highLevelCategory === 'fullstack' && <Layers3 className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />}
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-wide uppercase">
+                    {highLevelCategory === 'frontend' && 'Frontend Development'}
+                    {highLevelCategory === 'backend' && 'Backend Development'}
+                    {highLevelCategory === 'fullstack' && 'Full Stack Development'}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mt-0.5">
+                    {highLevelCategory === 'frontend' &&
+                      'Building responsive, interactive, and component-based user interfaces with React.js, modern JavaScript, semantic HTML, and responsive CSS styling.'}
+                    {highLevelCategory === 'backend' &&
+                      'Engineering reliable backend services, RESTful API endpoints, server routing, and database connectivity with Node.js and Express.js.'}
+                    {highLevelCategory === 'fullstack' &&
+                      'Connecting frontend interfaces with backend services, integrating REST APIs, and managing application data flow across the entire stack.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Sample high level questions */}
+              <div className="space-y-3 pt-1">
+                {(highLevelCategory === 'frontend'
+                  ? [
+                      {
+                        q: 'What can you build with React.js and JavaScript?',
+                        a: 'I build clean, responsive, single-page web applications and interactive interfaces using React.js and modern JavaScript. I break down interfaces into reusable functional components, handle component lifecycle and state with React hooks (useState, useEffect, useMemo), and ensure fast, predictable UI rendering.',
+                        t: ['React.js', 'JavaScript (ES6+)', 'Component Architecture'],
+                      },
+                      {
+                        q: 'How do you handle HTML & CSS styling and responsive layouts?',
+                        a: 'I write semantic HTML5 for clean structure and accessibility. For styling, I utilize modern CSS (Flexbox, CSS Grid) along with utility frameworks like Tailwind CSS to build mobile-first responsive layouts that look great on smartphones, tablets, laptops, and wide monitors.',
+                        t: ['HTML5', 'CSS3', 'Tailwind CSS', 'Responsive Layouts'],
+                      },
+                    ]
+                  : highLevelCategory === 'backend'
+                  ? [
+                      {
+                        q: 'What backend services can you develop with Node.js & Express.js?',
+                        a: 'I develop server-side applications using Node.js and the Express.js framework. I configure middleware, set up structured route handlers for different resources, process incoming JSON payloads, handle CORS, and secure endpoints with proper HTTP status codes.',
+                        t: ['Node.js', 'Express.js', 'Server Routing', 'Middleware'],
+                      },
+                      {
+                        q: 'How do you manage database connectivity and execute queries?',
+                        a: 'I connect Node.js backends to databases (such as PostgreSQL, MySQL, and document databases). I design tables, define relational schemas, write efficient queries, handle filtering and sorting, and ensure database connections are pooled and closed safely.',
+                        t: ['Database Connectivity', 'SQL Queries', 'Data Persistence'],
+                      },
+                    ]
+                  : [
+                      {
+                        q: 'How do you integrate frontend interfaces with backend services?',
+                        a: 'I connect React client components to Node.js/Express backend APIs using asynchronous fetch/axios requests. I manage request loading states, display clear validation and error messages to users, and update UI state in real time upon successful server responses.',
+                        t: ['Frontend & Backend Integration', 'Async Data Fetching', 'State Sync'],
+                      },
+                      {
+                        q: 'What is your process for complete web application development?',
+                        a: 'I take a project from concept to working product: starting with data modeling and database setup, building and testing the Express API routes, crafting the responsive React frontend, and linking the two together so users experience a cohesive, working application.',
+                        t: ['End-to-End Development', 'Architecture Flow', 'Functional Web Apps'],
+                      },
+                    ]
+                ).map((item, idx) => {
+                  const isExp = expandedHighLevelQuestion === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`rounded-2xl border transition-all duration-250 overflow-hidden ${
+                        isExp
+                          ? 'bg-[#1a1a1e] border-orange-500/40 shadow-md'
+                          : 'bg-white/5 border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setExpandedHighLevelQuestion(isExp ? null : idx)}
+                        className="w-full text-left px-5 py-4 flex items-center justify-between gap-3 cursor-pointer group"
+                      >
+                        <span className="text-sm sm:text-base font-bold text-white group-hover:text-orange-200 transition-colors">
+                          {item.q}
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-orange-400 shrink-0 transition-transform duration-250 ${
+                            isExp ? 'rotate-180 text-orange-300' : ''
+                          }`}
+                        />
+                      </button>
+                      {isExp && (
+                        <div className="px-5 pb-5 pt-1 border-t border-white/5">
+                          <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-3">
+                            {item.a}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {item.t.map((tg) => (
+                              <span
+                                key={tg}
+                                className="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30"
+                              >
+                                {tg}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="px-6 sm:px-8 py-4 border-t border-white/10 bg-black/40 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+              <span className="text-xs text-neutral-400 text-center sm:text-left">
+                Ready to discuss your project? Reach out directly via email.
+              </span>
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold border border-white/20 text-neutral-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copied ? 'Copied' : 'Copy Email'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenModalActive(false);
+                    setContactModalOpen(true);
+                  }}
+                  className="grow sm:grow-0 inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-[#A0080E] to-[#EA580C] hover:from-[#8B080E] hover:to-[#F97316] text-white shadow-md hover:shadow-[0_0_15px_rgba(234,88,12,0.4)] transition-all cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Send Email</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* "LET'S TALK" INTERACTIVE CONTACT MODAL (WITH FULL EDITABLE FORM & SEND BUTTON) */}
+      {contactModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setContactModalOpen(false)}
+        >
+          <div
+            className="bg-[#121214] text-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col p-6 sm:p-7 shadow-2xl relative border border-white/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            {/* Top Accent Line */}
+            <div className="h-1.5 absolute top-0 left-0 right-0 bg-gradient-to-r from-[#A0080E] via-[#EA580C] to-amber-400" />
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setContactModalOpen(false)}
+              className="absolute top-5 right-5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Close dialog"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-1 text-xs font-bold tracking-widest uppercase text-orange-400">
+              <Mail className="w-3.5 h-3.5 text-orange-400" />
+              <span>Contact Syed Mehdi</span>
+            </div>
+
+            <h3
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-1 text-white"
+              style={{ fontFamily: 'var(--font-heading)' }}
+            >
+              Let's Connect
+            </h3>
+
+            <p className="text-xs sm:text-sm font-normal text-neutral-400 mb-4">
+              Write your email and message below, and click Send Email to get in touch directly.
+            </p>
+
+            {/* Direct Email Card with 1-Click Copy */}
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between mb-4">
+              <div>
+                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">
+                  Direct Email Address
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-white select-all">
+                  syedmehdi.dev@gmail.com
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-colors cursor-pointer"
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+
+            {/* Full Editable Form with Inputs & Send Button */}
+            <form onSubmit={handleSendContactEmail} className="space-y-3 grow overflow-y-auto pr-0.5">
+              <div>
+                <label className="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder-neutral-500 text-xs sm:text-sm focus:outline-none focus:border-orange-400 focus:bg-white/10 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={senderEmail}
+                  onChange={(e) => setSenderEmail(e.target.value)}
+                  placeholder="your.email@example.com"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder-neutral-500 text-xs sm:text-sm focus:outline-none focus:border-orange-400 focus:bg-white/10 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">
+                  Message / Project Details
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  value={senderMessage}
+                  onChange={(e) => setSenderMessage(e.target.value)}
+                  placeholder="Tell me what you'd like to build (React app, full stack system, API integration, etc.)..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder-neutral-500 text-xs sm:text-sm focus:outline-none focus:border-orange-400 focus:bg-white/10 transition-colors resize-none"
+                />
+              </div>
+
+              {messageSent && (
+                <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                  <Check className="w-4 h-4 shrink-0" />
+                  <span>Opening your email client to send to syedmehdi.dev@gmail.com!</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="submit"
+                  className="grow inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#A0080E] to-[#EA580C] hover:from-[#8B080E] hover:to-[#F97316] text-white py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-md hover:shadow-[0_0_18px_rgba(234,88,12,0.45)] transition-all cursor-pointer"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Send Email</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setContactModalOpen(false)}
+                  className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold border border-white/20 text-neutral-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

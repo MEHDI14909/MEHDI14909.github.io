@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" fill="none">
+  <defs>
+    <linearGradient id="botBg" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B0B0E" />
+      <stop offset="60%" stop-color="#190C11" />
+      <stop offset="100%" stop-color="#09090C" />
+    </linearGradient>
+    <radialGradient id="botOrbGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5E47" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#A2090F" stop-opacity="0.48" />
+      <stop offset="100%" stop-color="#0B0B0E" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="botAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF6B57" />
+      <stop offset="100%" stop-color="#A2090F" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#botBg)" />
+
+  <!-- Subtle Radial Aura -->
+  <circle cx="910" cy="210" r="260" fill="url(#botOrbGlow)" />
+  <circle cx="240" cy="540" r="220" fill="url(#botOrbGlow)" opacity="0.45" />
+
+  <!-- Main Chat Window Frame -->
+  <rect x="86" y="54" width="1028" height="567" rx="30" fill="#121218" fill-opacity="0.92" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" />
+
+  <!-- Left Context Panel -->
+  <rect x="86" y="54" width="276" height="567" rx="30" fill="#0D0D12" />
+  <rect x="361" y="54" width="1" height="567" fill="rgba(255,255,255,0.08)" />
+
+  <!-- Neural Orb Avatar -->
+  <circle cx="224" cy="174" r="64" fill="url(#botOrbGlow)" />
+  <circle cx="224" cy="174" r="38" fill="url(#botAccent)" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
+  <circle cx="212" cy="168" r="4.5" fill="#FFFFFF" />
+  <circle cx="236" cy="168" r="4.5" fill="#FFFFFF" />
+  <path d="M214 184C218 190 230 190 234 184" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" />
+
+  <text x="224" y="246" text-anchor="middle" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="800">Personalized AI</text>
+  <text x="224" y="268" text-anchor="middle" fill="#FF6B73" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.14em">COMING SOON</text>
+
+  <rect x="116" y="302" width="216" height="44" rx="14" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" />
+  <text x="134" y="329" fill="#E4E4E7" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Portfolio Q&amp;A Memory</text>
+
+  <rect x="116" y="360" width="216" height="44" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" />
+  <text x="134" y="387" fill="#A1A1AA" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Custom Persona Tone</text>
+
+  <rect x="116" y="418" width="216" height="44" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" />
+  <text x="134" y="445" fill="#A1A1AA" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Smart Action Triggers</text>
+
+  <!-- Top Bar inside Chat Canvas -->
+  <circle cx="404" cy="100" r="6" fill="#34D399" />
+  <text x="422" y="105" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800">Conversational Assistant</text>
+  <rect x="942" y="83" width="136" height="32" rx="16" fill="rgba(255,107,115,0.15)" stroke="#FF6B73" stroke-opacity="0.45" />
+  <text x="1010" y="103" text-anchor="middle" fill="#FF858C" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">Live Context</text>
+  <line x1="362" y1="138" x2="1114" y2="138" stroke="rgba(255,255,255,0.08)" />
+
+  <!-- User Message Bubble -->
+  <rect x="652" y="170" width="420" height="72" rx="22" fill="url(#botAccent)" />
+  <text x="680" y="201" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600">Can you recommend the best web architecture</text>
+  <text x="680" y="223" fill="#FFE4E6" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="500">for my upcoming client platform?</text>
+
+  <!-- Assistant Response Bubble -->
+  <rect x="398" y="270" width="548" height="148" rx="24" fill="#1C1C24" stroke="rgba(255,255,255,0.12)" />
+  <circle cx="432" cy="306" r="14" fill="url(#botAccent)" />
+  <text x="460" y="311" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="800">Personalized Chatbot</text>
+  <text x="424" y="344" fill="#D4D4D8" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="500">Tailoring a fast Laravel + MySQL backend with a clean React UI</text>
+  <text x="424" y="368" fill="#D4D4D8" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="500">keeps database queries structured and response times sharp.</text>
+
+  <!-- Quick Suggestion Chips -->
+  <rect x="424" y="384" width="142" height="24" rx="12" fill="rgba(255,255,255,0.08)" />
+  <text x="495" y="400" text-anchor="middle" fill="#E4E4E7" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="700">View Tech Stack</text>
+  <rect x="578" y="384" width="146" height="24" rx="12" fill="rgba(255,255,255,0.08)" />
+  <text x="651" y="400" text-anchor="middle" fill="#E4E4E7" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="700">Generate Plan</text>
+
+  <!-- Composer Input Bar -->
+  <rect x="398" y="518" width="676" height="64" rx="32" fill="#1A1A22" stroke="rgba(255,255,255,0.15)" />
+  <text x="434" y="555" fill="#71717A" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500">Ask anything tailored to your workflow...</text>
+  <circle cx="1038" cy="550" r="22" fill="url(#botAccent)" />
+  <path d="M1031 550H1045M1039 544L1045 550L1039 556" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

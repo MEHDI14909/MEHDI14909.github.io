@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" fill="none">
+  <defs>
+    <linearGradient id="gymBg" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#111116" />
+      <stop offset="55%" stop-color="#1B1014" />
+      <stop offset="100%" stop-color="#0B0B0E" />
+    </linearGradient>
+    <radialGradient id="gymGlow" cx="78%" cy="22%" r="55%">
+      <stop offset="0%" stop-color="#E11D24" stop-opacity="0.34" />
+      <stop offset="55%" stop-color="#A2090F" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#0B0B0E" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="accentRed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF5A47" />
+      <stop offset="100%" stop-color="#A2090F" />
+    </linearGradient>
+    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF5A47" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#FF5A47" stop-opacity="0.02" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#gymBg)" />
+  <rect width="1200" height="675" fill="url(#gymGlow)" />
+
+  <!-- Subtle architectural grid -->
+  <g opacity="0.08" stroke="#FFFFFF" stroke-width="1">
+    <path d="M0 135H1200 M0 270H1200 M0 405H1200 M0 540H1200" />
+    <path d="M200 0V675 M400 0V675 M600 0V675 M800 0V675 M1000 0V675" />
+  </g>
+
+  <!-- Main Dashboard Frame -->
+  <rect x="64" y="48" width="1072" height="579" rx="28" fill="#14141A" fill-opacity="0.94" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" />
+
+  <!-- Left Sidebar -->
+  <rect x="64" y="48" width="218" height="579" rx="28" fill="#0F0F14" />
+  <rect x="281" y="48" width="1" height="579" fill="rgba(255,255,255,0.08)" />
+
+  <!-- Brand Mark -->
+  <rect x="92" y="84" width="40" height="40" rx="12" fill="url(#accentRed)" />
+  <path d="M103 104H121M106 97V111M118 97V111" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" />
+  <text x="144" y="102" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800" letter-spacing="0.02em">IRONPULSE</text>
+  <text x="144" y="120" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="0.14em">GYM ADMIN</text>
+
+  <!-- Sidebar Menu Items -->
+  <rect x="86" y="158" width="174" height="42" rx="12" fill="url(#accentRed)" fill-opacity="0.18" stroke="#FF5A47" stroke-opacity="0.45" />
+  <circle cx="108" cy="179" r="5" fill="#FF5A47" />
+  <text x="124" y="184" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">Overview</text>
+
+  <g fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="500">
+    <circle cx="108" cy="232" r="4" fill="#4B5563" />
+    <text x="124" y="237">Memberships</text>
+    <circle cx="108" cy="280" r="4" fill="#4B5563" />
+    <text x="124" y="285">Attendance</text>
+    <circle cx="108" cy="328" r="4" fill="#4B5563" />
+    <text x="124" y="333">Trainers &amp; Classes</text>
+    <circle cx="108" cy="376" r="4" fill="#4B5563" />
+    <text x="124" y="381">Billing &amp; Plans</text>
+  </g>
+
+  <!-- Laravel + MySQL Pill inside sidebar -->
+  <rect x="86" y="520" width="174" height="74" rx="16" fill="#181820" stroke="rgba(255,255,255,0.1)" />
+  <text x="102" y="546" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="0.14em">CORE ENGINE</text>
+  <text x="102" y="569" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="800">PHP · Laravel</text>
+  <text x="102" y="584" fill="#FF7366" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">MySQL Database</text>
+
+  <!-- Main Top Header -->
+  <text x="318" y="102" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800">Gym Operations Control</text>
+  <text x="318" y="124" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500">Live member check-ins, trainer slots, and monthly subscription analytics</text>
+
+  <rect x="938" y="80" width="166" height="38" rx="19" fill="url(#accentRed)" />
+  <text x="1021" y="104" text-anchor="middle" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700">+ New Member</text>
+
+  <!-- KPI Row (3 Cards) -->
+  <rect x="318" y="156" width="248" height="114" rx="20" fill="#1B1B22" stroke="rgba(255,255,255,0.1)" />
+  <text x="342" y="186" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">ACTIVE MEMBERS</text>
+  <text x="342" y="226" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800">1,284</text>
+  <text x="342" y="250" fill="#34D399" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">+14.2% this month</text>
+
+  <rect x="586" y="156" width="248" height="114" rx="20" fill="#1B1B22" stroke="rgba(255,255,255,0.1)" />
+  <text x="610" y="186" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">TODAY CHECK-INS</text>
+  <text x="610" y="226" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800">318</text>
+  <text x="610" y="250" fill="#FF7366" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">Peak hour 6PM–9PM</text>
+
+  <rect x="854" y="156" width="250" height="114" rx="20" fill="#1B1B22" stroke="rgba(255,255,255,0.1)" />
+  <text x="878" y="186" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">TRAINER SESSIONS</text>
+  <text x="878" y="226" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800">42</text>
+  <text x="878" y="250" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600">12 coaches active</text>
+
+  <!-- Attendance Chart Panel -->
+  <rect x="318" y="294" width="516" height="300" rx="22" fill="#1B1B22" stroke="rgba(255,255,255,0.1)" />
+  <text x="344" y="330" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700">Weekly Floor Occupancy</text>
+  <text x="344" y="349" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500">Real-time MySQL check-in records</text>
+
+  <path d="M350 530 C410 475, 455 490, 505 435 C555 380, 600 415, 650 390 C705 362, 745 410, 800 355 L800 555 L350 555 Z" fill="url(#chartGrad)" />
+  <path d="M350 530 C410 475, 455 490, 505 435 C555 380, 600 415, 650 390 C705 362, 745 410, 800 355" stroke="#FF5A47" stroke-width="3.5" stroke-linecap="round" />
+  <circle cx="505" cy="435" r="6" fill="#FFFFFF" stroke="#FF5A47" stroke-width="3" />
+  <circle cx="650" cy="390" r="6" fill="#FFFFFF" stroke="#FF5A47" stroke-width="3" />
+  <circle cx="800" cy="355" r="6" fill="#FFFFFF" stroke="#FF5A47" stroke-width="3" />
+
+  <!-- Right Trainer Schedule Card -->
+  <rect x="854" y="294" width="250" height="300" rx="22" fill="#1B1B22" stroke="rgba(255,255,255,0.1)" />
+  <text x="878" y="330" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700">Upcoming Sessions</text>
+
+  <rect x="876" y="352" width="206" height="62" rx="14" fill="#23232D" />
+  <rect x="890" y="366" width="8" height="34" rx="4" fill="#FF5A47" />
+  <text x="910" y="381" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">HIIT Conditioning</text>
+  <text x="910" y="400" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11">05:30 PM · Studio A</text>
+
+  <rect x="876" y="428" width="206" height="62" rx="14" fill="#23232D" />
+  <rect x="890" y="442" width="8" height="34" rx="4" fill="#34D399" />
+  <text x="910" y="457" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">Strength &amp; Mobility</text>
+  <text x="910" y="476" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11">07:00 PM · Main Floor</text>
+
+  <rect x="876" y="504" width="206" height="62" rx="14" fill="#23232D" />
+  <rect x="890" y="518" width="8" height="34" rx="4" fill="#FBBF24" />
+  <text x="910" y="533" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">Nutrition Check-in</text>
+  <text x="910" y="552" fill="#9CA3AF" font-family="Inter, system-ui, sans-serif" font-size="11">08:15 PM · Lounge</text>
+</svg>
